@@ -1,0 +1,38 @@
+.screen-settings .settings-layout {
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(300px, 0.9fr) minmax(0, 1.1fr);
+  gap: 12px;
+  padding: 12px;
+  min-height: 0;
+}
+.settings-col, .eq-col { min-height: 0; display: grid; gap: 12px; }
+.eq-grid { display: grid; gap: 10px; }
+.eq-band {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+}
+.eq-bars {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 8px;
+}
+.eq-bars input[type="range"] {
+  width: 100%;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  height: 160px;
+}
+.sample-row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.storage-box {
+  display:grid; gap: 10px; padding: 14px; border:1px solid var(--line); border-radius: 18px; background:#fff;
+}
+.simple-eq-presets { display:flex; flex-wrap:wrap; gap:8px; }
+@media (max-aspect-ratio: 1/1) {
+  .screen-settings .settings-layout { grid-template-columns: 1fr; grid-template-rows: auto auto; overflow: auto; }
+  .eq-bars { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}

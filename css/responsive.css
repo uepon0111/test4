@@ -1,0 +1,6 @@
+@media (max-width: 760px) {
+  :root { --sidebar-w: 72px; }
+  .tab-btn { min-height: 54px; padding: 6px; }
+  .btn, .chip, .seg-btn { min-height: 40px; }
+  .track-row { grid-template-columns: auto 1fr; }
+}

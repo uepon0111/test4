@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Tune Vault</title>
+  <script src="https://unpkg.com/lucide@0.263.1/dist/umd/lucide.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.5/dist/jsmediatags.min.js" defer></script>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/player.css">
+  <link rel="stylesheet" href="css/info-edit.css">
+  <link rel="stylesheet" href="css/log.css">
+  <link rel="stylesheet" href="css/settings.css">
+</head>
+<body class="landscape" data-screen="player">
+
+<div id="app">
+
+  <!-- ========== サイドバーナビ (1) 横画面 ========== -->
+  <nav id="sidebar-nav">
+    <div class="nav-logo"><i data-lucide="music-2"></i></div>
+    <button class="nav-tab active" data-screen="player" title="プレイヤー">
+      <i data-lucide="play-circle"></i><span>プレイヤー</span>
+    </button>
+    <button class="nav-tab" data-screen="info-edit" title="情報編集">
+      <i data-lucide="edit-3"></i><span>編集</span>
+    </button>
+    <button class="nav-tab" data-screen="log" title="ログ">
+      <i data-lucide="bar-chart-2"></i><span>ログ</span>
+    </button>
+    <button class="nav-tab" data-screen="settings" title="設定">
+      <i data-lucide="settings"></i><span>設定</span>
+    </button>
+  </nav>
+
+  <!-- ========== メインエリア ========== -->
+  <div id="main-area">
+
+    <!-- スクリーンコンテナ -->
+    <div id="screens-container">
+
+      <!-- ====== プレイヤー画面 ====== -->
+      <div id="screen-player" class="screen active">
+
+        <!-- プレイヤーウィジェット (2) 横画面のみ表示 -->
+        <aside id="player-widget">
+          <div id="pw-thumb-wrap">
+            <div id="pw-bg-blur"></div>
+            <img id="player-thumbnail" src="" alt="サムネイル" style="display:none">
+            <div id="player-thumbnail-placeholder"><i data-lucide="music-2"></i></div>
+          </div>
+          <div id="pw-info">
+            <div id="player-title" class="pw-title">曲を選択してください</div>
+            <div id="player-artist" class="pw-artist">---</div>
+          </div>
+          <div id="player-progress-wrap">
+            <span id="player-time-current">0:00</span>
+            <input id="player-seek" type="range" min="0" max="100" value="0" step="0.1">
+            <span id="player-time-total">0:00</span>
+          </div>
+          <div id="player-controls">
+            <button id="btn-shuffle" class="ctrl-btn" title="シャッフル"><i data-lucide="shuffle"></i></button>
+            <button id="btn-prev"    class="ctrl-btn" title="前の曲"><i data-lucide="skip-back"></i></button>
+            <button id="btn-play"    class="ctrl-btn ctrl-play" title="再生"><i data-lucide="play"></i></button>
+            <button id="btn-next"    class="ctrl-btn" title="次の曲"><i data-lucide="skip-forward"></i></button>
+            <button id="btn-loop"    class="ctrl-btn" title="リピート"><i data-lucide="repeat"></i></button>
+          </div>
+          <div id="player-speed-wrap">
+            <button id="btn-speed" class="speed-btn">1x</button>
+            <div id="speed-menu" class="dropdown-menu hidden">
+              <button data-speed="0.5">0.5x</button>
+              <button data-speed="0.75">0.75x</button>
+              <button data-speed="1" class="active">1.0x</button>
+              <button data-speed="1.25">1.25x</button>
+              <button data-speed="1.5">1.5x</button>
+              <button data-speed="2">2.0x</button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- プレイリストコンテナ (3) -->
+        <div id="playlist-container">
+
+          <!-- ツールバー: 検索(4)・プレイリスト作成(5)・ファイル追加(6) -->
+          <div id="playlist-toolbar">
+            <div class="search-box">
+              <i data-lucide="search"></i>
+              <input id="track-search" type="text" placeholder="タイトル・アーティスト・タグで検索">
+              <button class="search-clear-btn hidden" id="track-search-clear"><i data-lucide="x"></i></button>
+            </div>
+            <button id="btn-create-playlist" class="icon-btn" title="プレイリストを作成">
+              <i data-lucide="folder-plus"></i>
+            </button>
+            <button id="btn-add-file" class="icon-btn accent-btn" title="ファイルを追加">
+              <i data-lucide="plus-circle"></i>
+            </button>
+          </div>
+
+          <!-- プレイリストタブ(7) + 選択ボタン(8) -->
+          <div id="playlist-tabs-row">
+            <div id="playlist-tabs-scroll">
+              <div id="playlist-tabs"></div>
+            </div>
+            <button id="btn-file-select" class="icon-btn" title="複数選択">
+              <i data-lucide="check-square"></i>
+            </button>
+          </div>
+
+          <!-- 並べ替え(9) + 昇降順(10) + 複数選択バー -->
+          <div id="sort-row">
+            <div id="sort-controls">
+              <div class="sort-dropdown-wrap">
+                <button id="btn-sort" class="sort-btn">
+                  <i data-lucide="arrow-up-down"></i>
+                  <span id="sort-label">手動順</span>
+                  <i data-lucide="chevron-down"></i>
+                </button>
+                <div id="sort-menu" class="dropdown-menu hidden">
+                  <button data-sort="manual"><i data-lucide="grip-vertical"></i>手動順</button>
+                  <button data-sort="added"><i data-lucide="calendar-plus"></i>追加日順</button>
+                  <button data-sort="title"><i data-lucide="type"></i>タイトル順</button>
+                  <button data-sort="release"><i data-lucide="calendar"></i>投稿日順</button>
+                </div>
+              </div>
+              <button id="btn-order" class="icon-btn" title="昇順/降順"><i data-lucide="arrow-up"></i></button>
+            </div>
+            <div id="multi-select-bar" class="hidden">
+              <span id="select-count">0件選択</span>
+              <button class="btn btn-xs" id="btn-select-all">全選択</button>
+              <button class="btn btn-xs btn-ghost" id="btn-select-none">解除</button>
+              <button class="btn btn-xs btn-secondary" id="btn-multi-add"><i data-lucide="list-plus"></i>追加</button>
+              <button class="btn btn-xs btn-secondary" id="btn-multi-tag"><i data-lucide="tag"></i>タグ</button>
+              <button class="btn btn-xs btn-danger-outline" id="btn-multi-delete"><i data-lucide="trash-2"></i></button>
+            </div>
+          </div>
+
+          <!-- ファイル一覧 (11) -->
+          <div id="file-list-wrap">
+            <div id="file-list"></div>
+          </div>
+
+        </div><!-- /playlist-container -->
+      </div><!-- /screen-player -->
+
+      <!-- ====== 情報編集画面 ====== -->
+      <div id="screen-info-edit" class="screen">
+        <div id="info-edit-area">
+
+          <!-- サブナビ: 曲一覧(14)・タグ(15)・アーティスト(16) -->
+          <div id="info-edit-nav">
+            <button class="info-tab active" data-view="songs"><i data-lucide="music"></i>曲一覧</button>
+            <button class="info-tab" data-view="tags"><i data-lucide="tag"></i>タグ管理</button>
+            <button class="info-tab" data-view="artists"><i data-lucide="user"></i>アーティスト</button>
+          </div>
+
+          <!-- 曲一覧ビュー -->
+          <div id="view-songs" class="info-view active">
+            <div id="songs-toolbar">
+              <div class="search-box">
+                <i data-lucide="search"></i>
+                <input id="song-search" type="text" placeholder="タイトル・アーティスト・タグで検索">
+              </div>
+              <div id="songs-sort-row">
+                <div class="sort-dropdown-wrap">
+                  <button id="btn-song-sort" class="sort-btn">
+                    <i data-lucide="arrow-up-down"></i>
+                    <span id="song-sort-label">追加日順</span>
+                    <i data-lucide="chevron-down"></i>
+                  </button>
+                  <div id="song-sort-menu" class="dropdown-menu hidden">
+                    <button data-sort="added"><i data-lucide="calendar-plus"></i>追加日順</button>
+                    <button data-sort="title"><i data-lucide="type"></i>タイトル順</button>
+                    <button data-sort="release"><i data-lucide="calendar"></i>投稿日順</button>
+                  </div>
+                </div>
+                <button id="btn-song-order" class="icon-btn" title="昇順/降順"><i data-lucide="arrow-up"></i></button>
+                <button id="btn-song-cols"  class="icon-btn" title="表示列数"><i data-lucide="layout-grid"></i><span>4</span></button>
+              </div>
+            </div>
+            <div id="songs-grid-wrap">
+              <div id="songs-grid"></div>
+            </div>
+          </div>
+
+          <!-- タグ管理ビュー -->
+          <div id="view-tags" class="info-view">
+            <div id="tags-toolbar">
+              <button id="btn-create-tag" class="btn btn-primary">
+                <i data-lucide="plus"></i>タグを作成
+              </button>
+            </div>
+            <div id="tags-list-wrap">
+              <div id="tags-list"></div>
+            </div>
+          </div>
+
+          <!-- アーティスト管理ビュー -->
+          <div id="view-artists" class="info-view">
+            <div id="artists-toolbar">
+              <button id="btn-create-artist" class="btn btn-primary">
+                <i data-lucide="user-plus"></i>アーティストを追加
+              </button>
+            </div>
+            <div id="artists-list-wrap">
+              <div id="artists-list"></div>
+            </div>
+          </div>
+
+        </div><!-- /info-edit-area -->
+      </div><!-- /screen-info-edit -->
+
+      <!-- ====== ログ画面 ====== -->
+      <div id="screen-log" class="screen">
+        <div id="log-area"></div>
+      </div>
+
+      <!-- ====== 設定画面 ====== -->
+      <div id="screen-settings" class="screen">
+        <div id="settings-area"></div>
+      </div>
+
+    </div><!-- /screens-container -->
+
+    <!-- ========== ミニプレイヤー (12) ========== -->
+    <div id="mini-player">
+      <div id="mini-thumb-wrap">
+        <img id="mini-thumb" src="" alt="" style="display:none">
+        <div id="mini-thumb-placeholder"><i data-lucide="music-2"></i></div>
+      </div>
+      <div id="mini-info">
+        <div id="mini-title">再生停止中</div>
+        <div id="mini-artist">---</div>
+      </div>
+      <div id="mini-controls">
+        <button id="mini-btn-prev" class="ctrl-btn-sm" title="前の曲"><i data-lucide="skip-back"></i></button>
+        <button id="mini-btn-play" class="ctrl-btn-sm ctrl-play-sm" title="再生/停止"><i data-lucide="play"></i></button>
+        <button id="mini-btn-next" class="ctrl-btn-sm" title="次の曲"><i data-lucide="skip-forward"></i></button>
+      </div>
+    </div>
+
+    <!-- ========== ボトムナビ (1) 縦画面 ========== -->
+    <nav id="bottom-nav">
+      <button class="nav-tab active" data-screen="player">
+        <i data-lucide="play-circle"></i><span>プレイヤー</span>
+      </button>
+      <button class="nav-tab" data-screen="info-edit">
+        <i data-lucide="edit-3"></i><span>編集</span>
+      </button>
+      <button class="nav-tab" data-screen="log">
+        <i data-lucide="bar-chart-2"></i><span>ログ</span>
+      </button>
+      <button class="nav-tab" data-screen="settings">
+        <i data-lucide="settings"></i><span>設定</span>
+      </button>
+    </nav>
+
+  </div><!-- /main-area -->
+</div><!-- /app -->
+
+<!-- ========== モーダル ========== -->
+<div id="modal-overlay" class="hidden" style="display:none">
+  <div id="modal-container"></div>
+</div>
+
+<!-- ========== トースト通知 ========== -->
+<div id="toast-container"></div>
+
+<!-- ========== スクリプト ========== -->
+<script src="js/utils.js"></script>
+<script src="js/db.js"></script>
+<script src="js/store.js"></script>
+<script src="js/metadata.js"></script>
+<script src="js/virtual-scroll.js"></script>
+<script src="js/player-engine.js"></script>
+<script src="js/player-ui.js"></script>
+<script src="js/info-edit-ui.js"></script>
+<script src="js/log-ui.js"></script>
+<script src="js/settings-ui.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

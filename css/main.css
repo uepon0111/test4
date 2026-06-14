@@ -1,0 +1,458 @@
+/* ============================================================
+   main.css – 共通スタイル・レイアウト・変数
+   ============================================================ */
+
+/* ---- CSS変数 ---- */
+:root {
+  --bg-1:      #ffffff;
+  --bg-2:      #f8f8fb;
+  --bg-3:      #efeff7;
+  --accent:    #6C63FF;
+  --accent-h:  #5a52e8;
+  --accent-dim:#eae9ff;
+  --text-1:    #1c1b2e;
+  --text-2:    #6b6a7e;
+  --text-3:    #a8a7b8;
+  --border:    #e4e3f0;
+  --danger:    #ef4444;
+  --success:   #22c55e;
+  --warning:   #f59e0b;
+  --sidebar-w: 72px;
+  --bottom-h:  60px;
+  --mini-h:    64px;
+  --radius:    10px;
+  --radius-sm: 6px;
+  --radius-lg: 16px;
+  --shadow:    0 2px 12px rgba(108,99,255,.1);
+  --shadow-md: 0 4px 20px rgba(108,99,255,.15);
+  --trans:     .18s ease;
+}
+
+/* ---- リセット・ベース ---- */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html,body { height:100%; overflow:hidden; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Hiragino Sans',sans-serif; background:var(--bg-1); color:var(--text-1); font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+button { cursor:pointer; border:none; background:none; font:inherit; color:inherit; }
+input  { font:inherit; outline:none; }
+img    { display:block; object-fit:cover; }
+svg    { flex-shrink:0; }
+::-webkit-scrollbar { width:5px; height:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
+
+/* ---- アプリレイアウト ---- */
+#app {
+  display: flex;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* ==== 横画面 ==== */
+@media (orientation: landscape) {
+  #app { flex-direction: row; }
+
+  /* サイドバーナビ */
+  #sidebar-nav {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--bg-2);
+    border-right: 1px solid var(--border);
+    padding: 8px 0;
+    gap: 4px;
+    z-index: 10;
+  }
+  #bottom-nav { display: none; }
+
+  /* メインエリア */
+  #main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+  /* ミニプレイヤー - プレイヤー画面では非表示 */
+  #mini-player { flex-shrink: 0; }
+  body[data-screen="player"] #mini-player { display: none; }
+
+  /* プレイヤー画面 */
+  #screen-player { flex-direction: row; }
+  #player-widget { display: flex; }
+}
+
+/* ==== 縦画面 ==== */
+@media (orientation: portrait) {
+  #app { flex-direction: column; }
+  #sidebar-nav { display: none; }
+
+  #main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+
+  #bottom-nav {
+    height: var(--bottom-h);
+    flex-shrink: 0;
+    display: flex;
+    background: var(--bg-2);
+    border-top: 1px solid var(--border);
+  }
+
+  /* プレイヤーウィジェット - 縦画面では非表示 */
+  #player-widget { display: none !important; }
+
+  /* ミニプレイヤー常時表示 */
+  #mini-player { flex-shrink: 0; }
+}
+
+/* ---- スクリーンコンテナ ---- */
+#screens-container { flex: 1; overflow: hidden; position: relative; min-height: 0; }
+.screen { display: none; width: 100%; height: 100%; }
+.screen.active { display: flex; }
+
+/* ---- サイドバーナビ共通 ---- */
+.nav-logo {
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.nav-logo svg { width: 26px; height: 26px; }
+
+.nav-tab {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 56px; height: 56px;
+  border-radius: var(--radius);
+  color: var(--text-2);
+  gap: 3px;
+  transition: all var(--trans);
+  position: relative;
+  font-size: 10px;
+}
+.nav-tab svg { width: 20px; height: 20px; }
+.nav-tab span { font-size: 9px; font-weight: 500; }
+.nav-tab:hover { background: var(--accent-dim); color: var(--accent); }
+.nav-tab.active { background: var(--accent-dim); color: var(--accent); font-weight: 600; }
+.nav-tab.active::before {
+  content:''; position:absolute; left:0; top:50%; transform:translateY(-50%);
+  width:3px; height:28px; background:var(--accent); border-radius:0 3px 3px 0;
+}
+
+/* ボトムナビ */
+#bottom-nav .nav-tab {
+  flex: 1; height: 100%;
+  width: auto; border-radius: 0;
+  font-size: 10px;
+}
+#bottom-nav .nav-tab.active::before {
+  left:50%; top:0; transform:translateX(-50%);
+  width:28px; height:3px; border-radius:0 0 3px 3px;
+}
+
+/* ---- ミニプレイヤー (12) ---- */
+#mini-player {
+  height: var(--mini-h);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  background: var(--bg-2);
+  border-top: 1px solid var(--border);
+  cursor: pointer;
+  transition: background var(--trans);
+  user-select: none;
+}
+#mini-player:hover { background: var(--bg-3); }
+#mini-thumb-wrap {
+  width: 44px; height: 44px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--bg-3);
+  display: flex; align-items: center; justify-content: center;
+}
+#mini-thumb { width:100%; height:100%; object-fit:cover; }
+#mini-thumb-placeholder { color: var(--text-3); }
+#mini-thumb-placeholder svg { width:18px; height:18px; }
+#mini-info { flex:1; min-width:0; }
+#mini-title { font-size:13px; font-weight:600; color:var(--text-1); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#mini-artist { font-size:11px; color:var(--text-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
+#mini-controls { display:flex; align-items:center; gap:4px; flex-shrink:0; }
+
+.ctrl-btn-sm {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-2);
+  transition: all var(--trans);
+}
+.ctrl-btn-sm svg { width: 18px; height: 18px; }
+.ctrl-btn-sm:hover { background: var(--bg-3); color: var(--text-1); }
+.ctrl-play-sm { color: var(--accent); }
+.ctrl-play-sm:hover { background: var(--accent-dim); }
+
+/* ---- モーダル ---- */
+#modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(28,27,46,.45);
+  backdrop-filter: blur(4px);
+  align-items: center; justify-content: center;
+  padding: 16px;
+}
+#modal-container { width: 100%; max-height: 90dvh; display: flex; align-items: center; justify-content: center; }
+
+.modal-dialog {
+  background: var(--bg-1);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(0,0,0,.2);
+  width: 100%; max-width: 480px;
+  max-height: 85dvh;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  animation: modal-in .2s ease;
+}
+.modal-dialog.modal-lg { max-width: 600px; }
+.modal-dialog.modal-sm { max-width: 380px; }
+.modal-dialog.modal-player { max-width: 420px; }
+
+@keyframes modal-in {
+  from { opacity:0; transform:scale(.95) translateY(8px); }
+  to   { opacity:1; transform:scale(1)  translateY(0);    }
+}
+
+.modal-header {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.modal-header h3 { font-size:16px; font-weight:700; }
+.modal-close { width:32px; height:32px; border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; color:var(--text-2); transition:all var(--trans); }
+.modal-close:hover { background:var(--bg-3); color:var(--text-1); }
+.modal-close svg { width:18px; height:18px; }
+
+.modal-body { padding:16px 20px; overflow-y:auto; flex:1; }
+.modal-body.modal-scroll { overflow-y:auto; }
+.modal-footer { padding:12px 20px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:flex-end; gap:8px; flex-shrink:0; }
+.modal-body p { color: var(--text-2); line-height: 1.6; }
+
+/* ---- フォーム ---- */
+.form-group { margin-bottom: 16px; }
+.form-label { display:block; font-size:12px; font-weight:600; color:var(--text-2); margin-bottom:6px; letter-spacing:.03em; text-transform:uppercase; }
+.form-label-sm { font-size:11px; color:var(--text-3); display:block; margin-bottom:4px; }
+.form-input {
+  width:100%; padding:10px 12px;
+  border:1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-1);
+  color: var(--text-1);
+  font-size: 14px;
+  transition: border-color var(--trans);
+}
+.form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+.form-input.invalid { border-color: var(--danger); }
+
+/* ---- ボタン ---- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 600;
+  transition: all var(--trans);
+  white-space: nowrap;
+}
+.btn svg { width: 15px; height: 15px; }
+.btn-primary { background:var(--accent); color:#fff; }
+.btn-primary:hover { background:var(--accent-h); }
+.btn-secondary { background:var(--bg-3); color:var(--text-1); }
+.btn-secondary:hover { background:var(--border); }
+.btn-ghost { background:transparent; color:var(--text-2); }
+.btn-ghost:hover { background:var(--bg-3); color:var(--text-1); }
+.btn-danger { background:var(--danger); color:#fff; }
+.btn-danger:hover { background:#dc2626; }
+.btn-outline-danger { border:1.5px solid var(--danger); color:var(--danger); }
+.btn-outline-danger:hover { background:var(--danger); color:#fff; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-xs { padding: 4px 8px; font-size: 11px; border-radius: 4px; }
+
+.icon-btn {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-2);
+  transition: all var(--trans);
+}
+.icon-btn svg { width: 18px; height: 18px; }
+.icon-btn:hover { background: var(--bg-3); color: var(--text-1); }
+.icon-btn.active { color: var(--accent); background: var(--accent-dim); }
+.accent-btn { color: var(--accent); }
+.accent-btn:hover { background: var(--accent-dim); }
+
+/* ---- 検索ボックス ---- */
+.search-box {
+  display: flex; align-items: center; gap: 8px;
+  flex: 1; min-width: 0;
+  background: var(--bg-2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0 10px;
+  transition: border-color var(--trans);
+}
+.search-box:focus-within { border-color: var(--accent); background: var(--bg-1); }
+.search-box svg { width: 15px; height: 15px; color: var(--text-3); flex-shrink: 0; }
+.search-box input { flex:1; border:none; background:transparent; color:var(--text-1); font-size:13px; padding:9px 0; min-width:0; }
+.search-box input::placeholder { color: var(--text-3); }
+.search-clear-btn { color:var(--text-3); padding:2px; }
+
+/* ---- ドロップダウン ---- */
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 300;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  min-width: 160px;
+  animation: dd-in .15s ease;
+}
+@keyframes dd-in { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+.dropdown-menu button {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 13px; color: var(--text-1);
+  transition: background var(--trans);
+}
+.dropdown-menu button svg { width: 14px; height: 14px; color: var(--text-3); }
+.dropdown-menu button:hover { background: var(--bg-2); }
+.dropdown-menu button.active { color: var(--accent); background: var(--accent-dim); font-weight: 600; }
+.hidden { display: none !important; }
+.sort-dropdown-wrap { position: relative; }
+
+/* ---- トースト ---- */
+#toast-container {
+  position: fixed; bottom: 80px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; gap: 8px;
+  z-index: 2000; pointer-events: none; width: 320px; max-width: 90vw;
+}
+.toast {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  background: var(--text-1);
+  color: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  font-size: 13px; font-weight: 500;
+  pointer-events: all; cursor: pointer;
+  opacity: 0; transform: translateY(12px) scale(.96);
+  transition: all .25s ease;
+}
+.toast.toast-visible { opacity: 1; transform: translateY(0) scale(1); }
+.toast svg { width: 16px; height: 16px; flex-shrink: 0; }
+.toast-success { background: #1a7a4e; }
+.toast-error   { background: #b91c1c; }
+.toast-warning { background: #b45309; }
+
+/* ---- 空リスト表示 ---- */
+.list-empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 200px; gap: 12px; color: var(--text-3);
+}
+.list-empty svg { width: 40px; height: 40px; }
+.list-empty p { font-size: 14px; }
+.list-empty .hint { font-size: 12px; }
+
+/* ---- テキストユーティリティ ---- */
+.text-muted     { color: var(--text-2); font-size: 12px; }
+.text-muted-sm  { color: var(--text-3); font-size: 11px; margin: 4px 0; }
+
+/* ---- マルチ選択アイテム ---- */
+.multi-select-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.multi-select-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13px;
+  transition: all var(--trans);
+  position: relative;
+}
+.multi-select-item:hover { border-color: var(--accent); background: var(--accent-dim); }
+.multi-select-item.selected { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); font-weight: 600; }
+.check-icon { width: 14px; height: 14px; opacity: 0; }
+.multi-select-item.selected .check-icon { opacity: 1; }
+
+/* ---- カラースウォッチ ---- */
+.color-swatches { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.swatch {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 2.5px solid transparent;
+  transition: transform var(--trans), border-color var(--trans);
+}
+.swatch:hover { transform: scale(1.15); }
+.swatch.active { border-color: var(--text-1); transform: scale(1.15); }
+.color-custom-wrap { margin-bottom: 8px; }
+.color-picker-input { width: 100%; height: 40px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); cursor: pointer; }
+.color-preview-wrap { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); }
+.tag-chip-preview { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+
+/* ---- タグチップ ---- */
+.tag-chip { display:inline-flex; align-items:center; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:600; white-space:nowrap; }
+.tag-dot { width:10px; height:10px; border-radius:50%; display:inline-block; flex-shrink:0; }
+
+/* ---- プレイリスト選択 ---- */
+.pl-select-list { display:flex; flex-direction:column; gap:6px; }
+.pl-select-item {
+  display:flex; align-items:center; gap:10px;
+  padding:12px 14px;
+  border-radius:var(--radius-sm);
+  background:var(--bg-2);
+  font-size:14px; font-weight:500;
+  transition:background var(--trans);
+}
+.pl-select-item:hover { background:var(--accent-dim); color:var(--accent); }
+.pl-select-item svg { width:16px; height:16px; }
+
+/* ---- タグ選択リスト ---- */
+.tag-select-list { display:flex; flex-wrap:wrap; gap:8px; }
+.tag-select-btn {
+  display:flex; align-items:center; gap:6px;
+  padding:6px 12px; border-radius:20px;
+  background:var(--bg-2); border:1.5px solid var(--border);
+  font-size:13px; transition:all var(--trans);
+}
+.tag-select-btn:hover { border-color:var(--accent); background:var(--accent-dim); }
+.tag-select-btn .tag-dot { width:10px; height:10px; }
+
+/* ---- アーティストアイコン ---- */
+.artist-icon-sm { width:28px; height:28px; border-radius:50%; overflow:hidden; background:var(--bg-3); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.artist-icon-sm svg { width:16px; height:16px; color:var(--text-3); }
+.artist-icon-sm img { width:100%; height:100%; object-fit:cover; }
+
+/* ---- フルプレイヤーモーダル ---- */
+.full-player-body { padding:20px; display:flex; flex-direction:column; align-items:center; gap:16px; }
+.fp-thumb-wrap { width:180px; height:180px; border-radius:var(--radius-lg); overflow:hidden; background:var(--bg-3); display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-md); }
+.fp-thumb-wrap img { width:100%; height:100%; object-fit:cover; }
+.fp-thumb-placeholder { color:var(--text-3); }
+.fp-thumb-placeholder svg { width:48px; height:48px; }
+.fp-title { font-size:17px; font-weight:700; text-align:center; color:var(--text-1); }
+.fp-artist { font-size:13px; color:var(--text-2); text-align:center; }
+.fp-progress-wrap { width:100%; display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-3); }
+.fp-progress-wrap input[type=range] { flex:1; }
+.fp-controls { display:flex; align-items:center; gap:12px; }
+.fp-speed-wrap { display:flex; align-items:center; gap:10px; }
+.fp-speed-label { font-size:12px; color:var(--text-2); }
+.fp-speed-btns { display:flex; gap:4px; }
+.speed-preset-btn { padding:4px 8px; border-radius:4px; font-size:11px; background:var(--bg-3); color:var(--text-2); transition:all var(--trans); }
+.speed-preset-btn:hover,.speed-preset-btn.active { background:var(--accent); color:#fff; }
+
+/* ---- レスポンシブ調整 ---- */
+@media (max-width: 480px) {
+  .modal-dialog { max-width: 100%; border-radius: var(--radius-lg) var(--radius-lg) 0 0; position: fixed; bottom: 0; left: 0; right: 0; max-height: 90dvh; }
+  #modal-container { align-items: flex-end; }
+}
+
+/* ---- 向き固有 ---- */
+@media (orientation: landscape) {
+  #toast-container { bottom: 16px; }
+}

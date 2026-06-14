@@ -1,0 +1,302 @@
+/* ============================================================
+   info-edit.css – 情報編集画面
+   ============================================================ */
+
+/* ---- 情報編集画面レイアウト ---- */
+#screen-info-edit { overflow: hidden; }
+#info-edit-area {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  /* overflow:hidden 削除 - dropdown クリップ防止 */
+}
+
+/* ---- サブナビゲーション (14)(15)(16) ---- */
+#info-edit-nav {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--bg-1);
+}
+.info-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  transition: all var(--trans);
+  white-space: nowrap;
+}
+.info-tab svg { width: 15px; height: 15px; }
+.info-tab:hover { background: var(--bg-2); color: var(--text-1); }
+.info-tab.active { background: var(--accent-dim); color: var(--accent); font-weight: 700; }
+
+/* ---- ビュー共通 ---- */
+.info-view {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  /* overflow:hidden は削除 - dropdown がクリップされるのを防ぐ */
+}
+.info-view.active { display: flex; }
+
+/* ============================================================
+   曲一覧ビュー
+   ============================================================ */
+#view-songs { gap: 0; }
+
+#songs-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--bg-1);
+  position: relative;
+  z-index: 10;
+}
+#songs-sort-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  z-index: 10;
+}
+#btn-song-cols {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-2);
+}
+#btn-song-cols svg { width: 14px; height: 14px; }
+#btn-song-cols span { font-weight: 600; }
+
+#songs-grid-wrap {
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+  padding: 10px;
+}
+#songs-grid { height: 100%; }
+
+/* ---- 曲グリッドカード (21) ---- */
+.song-card {
+  background: var(--bg-1);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all var(--trans);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.song-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 14px rgba(108,99,255,.15);
+  transform: translateY(-2px);
+}
+
+.song-card-thumb-wrap {
+  height: 130px;
+  background: var(--bg-3);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.song-card-thumb { width: 100%; height: 100%; object-fit: cover; }
+.song-card-thumb-ph { color: var(--text-3); }
+.song-card-thumb-ph svg { width: 28px; height: 28px; }
+
+.song-card-info {
+  padding: 8px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+.song-card-title {
+  font-size: 12px; font-weight: 700; color: var(--text-1);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  line-height: 1.4;
+}
+.song-card-artist {
+  font-size: 11px; color: var(--text-2);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.song-card-date { font-size: 10px; color: var(--text-3); }
+.song-card-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px; }
+
+/* ============================================================
+   タグ管理ビュー
+   ============================================================ */
+#view-tags { gap: 0; }
+
+#tags-toolbar {
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+#tags-list-wrap { flex: 1; overflow: hidden; min-height: 0; }
+#tags-list { height: 100%; }
+
+.tag-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--border);
+  transition: background var(--trans);
+}
+.tag-list-item:hover { background: var(--bg-2); }
+
+.tag-color-dot {
+  width: 16px; height: 16px; border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+}
+.tag-name { flex: 1; font-size: 14px; font-weight: 600; color: var(--text-1); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tag-count { font-size: 11px; flex-shrink: 0; }
+
+.btn-edit-tag, .btn-del-tag {
+  width: 30px; height: 30px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-3);
+  transition: all var(--trans);
+  flex-shrink: 0;
+  opacity: 0;
+}
+.btn-edit-tag svg, .btn-del-tag svg { width: 14px; height: 14px; }
+.tag-list-item:hover .btn-edit-tag,
+.tag-list-item:hover .btn-del-tag { opacity: 1; }
+.btn-edit-tag:hover { color: var(--accent); background: var(--accent-dim); }
+.btn-del-tag:hover  { color: var(--danger); background: #fee2e2; }
+
+.reorder-btns { display: flex; flex-direction: column; gap: 1px; flex-shrink: 0; }
+.btn-tag-up, .btn-tag-down, .btn-artist-up, .btn-artist-down {
+  width: 22px; height: 22px; border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-3); transition: all var(--trans);
+  opacity: 0;
+}
+.btn-tag-up svg, .btn-tag-down svg { width: 13px; height: 13px; }
+.tag-list-item:hover .btn-tag-up,
+.tag-list-item:hover .btn-tag-down { opacity: 1; }
+.btn-tag-up:hover, .btn-tag-down:hover { background: var(--bg-3); color: var(--text-1); }
+@media (hover: none) {
+  .btn-edit-tag, .btn-del-tag, .btn-tag-up, .btn-tag-down,
+  .btn-edit-artist, .btn-del-artist, .btn-artist-up, .btn-artist-down { opacity: 1; }
+}
+
+/* ============================================================
+   アーティスト管理ビュー
+   ============================================================ */
+#view-artists { gap: 0; }
+#artists-toolbar { padding: 10px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+#artists-list-wrap { flex: 1; overflow: hidden; min-height: 0; }
+#artists-list { height: 100%; }
+
+.artist-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--border);
+  transition: background var(--trans);
+}
+.artist-list-item:hover { background: var(--bg-2); }
+
+.artist-icon-wrap {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--bg-3);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  border: 2px solid var(--border);
+}
+.artist-icon-img { width: 100%; height: 100%; object-fit: cover; }
+.artist-icon-ph { color: var(--text-3); }
+.artist-icon-ph svg { width: 18px; height: 18px; }
+
+.artist-name  { flex: 1; font-size: 14px; font-weight: 600; color: var(--text-1); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.artist-count { font-size: 11px; color: var(--text-2); flex-shrink: 0; }
+
+.btn-edit-artist, .btn-del-artist {
+  width: 30px; height: 30px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-3); transition: all var(--trans); flex-shrink: 0; opacity: 0;
+}
+.btn-edit-artist svg, .btn-del-artist svg { width: 14px; height: 14px; }
+.artist-list-item:hover .btn-edit-artist,
+.artist-list-item:hover .btn-del-artist { opacity: 1; }
+.btn-edit-artist:hover { color: var(--accent); background: var(--accent-dim); }
+.btn-del-artist:hover  { color: var(--danger); background: #fee2e2; }
+
+/* ============================================================
+   曲編集モーダル
+   ============================================================ */
+.edit-thumb-section { display: flex; justify-content: center; margin-bottom: 16px; }
+.edit-thumb-wrap {
+  width: 100px; height: 100px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg-3);
+  cursor: pointer;
+  position: relative;
+  transition: all var(--trans);
+  border: 2px dashed var(--border);
+}
+.edit-thumb-wrap:hover { border-color: var(--accent); }
+.edit-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.edit-thumb-ph {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 6px;
+  color: var(--text-3);
+  font-size: 11px;
+  text-align: center;
+  padding: 8px;
+}
+.edit-thumb-ph svg { width: 24px; height: 24px; }
+
+/* アーティスト作成モーダル */
+.artist-icon-edit-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.artist-icon-edit-preview {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: var(--bg-3);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid var(--border);
+}
+.artist-icon-edit-preview svg { width: 24px; height: 24px; color: var(--text-3); }
+.artist-icon-edit-preview img { width: 100%; height: 100%; object-fit: cover; }

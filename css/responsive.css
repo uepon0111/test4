@@ -1,0 +1,191 @@
+/* ========== RESPONSIVE LAYOUT ========== */
+
+/* Mobile first: portrait (< 640px) */
+
+
+/* -------- Tablet / Small Desktop (640px+) -------- */
+@media (min-width: 640px) {
+  .modal {
+    border-radius: var(--radius-xl);
+    align-self: center;
+    max-height: 88vh;
+  }
+
+  .modal-overlay {
+    align-items: center;
+    padding: 24px;
+  }
+
+  .upload-modal { max-height: 85vh; }
+  .viewer-modal { max-height: 90vh; }
+}
+
+/* -------- Desktop / Landscape (860px+) -------- */
+@media (min-width: 860px) {
+  :root {
+    --header-height: 60px;
+    --sidebar-width: 220px;
+  }
+
+  /* Sidebar always visible on desktop */
+  .sidebar {
+    transform: translateX(0) !important;
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    height: calc(100vh - var(--header-height));
+    box-shadow: none;
+    border-top: none;
+    z-index: 100;
+  }
+
+  .sidebar-header {
+    display: none; /* hide handle on desktop */
+  }
+
+  .sidebar-overlay { display: none !important; }
+
+  #menu-toggle { display: none; }
+  #sidebar-close { display: none; }
+
+  .main {
+    left: var(--sidebar-width);
+  }
+
+  .control-bar {
+    padding: 10px 16px 8px;
+  }
+
+  .filter-panel {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .filter-section {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .search-row {
+    gap: 10px;
+  }
+
+  .sort-row {
+    gap: 12px;
+  }
+
+  .fab { bottom: 28px; right: 28px; }
+
+  .notification-container { bottom: 24px; right: 24px; }
+
+  .viewer-image-wrap { max-height: 60vh; }
+
+  .upload-mode-grid { gap: 16px; }
+
+  .settings-content { padding: 20px; max-width: 680px; }
+
+  .view-header { padding: 20px 20px 10px; }
+  .view-desc { padding: 0 20px 14px; }
+  .trash-list { padding: 10px 16px; }
+}
+
+/* -------- Wide desktop (1100px+) -------- */
+@media (min-width: 1100px) {
+  :root { --sidebar-width: 240px; }
+
+  .card-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .settings-content { max-width: 720px; }
+}
+
+/* -------- Very wide (1400px+) -------- */
+@media (min-width: 1400px) {
+  .card-list {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ========== CARD SIZE VARIANTS ========== */
+
+/* Mobile card layout */
+@media (max-width: 639px) {
+  .card-thumb { width: 78px; }
+
+  .card-title {
+    font-size: 12px;
+    -webkit-line-clamp: 2;
+  }
+
+  .card-miss-row { gap: 6px; }
+  .miss-value { font-size: 11px; }
+  .miss-label { font-size: 9px; }
+  .diff-badge { font-size: 9px; padding: 1px 6px; }
+  .level-badge { font-size: 10px; padding: 1px 5px; }
+}
+
+/* Desktop card layout */
+@media (min-width: 860px) {
+  .card-thumb { width: 82px; }
+  .card-body { padding: 10px 10px 8px; }
+}
+
+/* ========== SCROLL UTILITIES ========== */
+.card-list-container {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+/* Hide scrollbar on WebKit but keep functionality */
+.card-list-container::-webkit-scrollbar { width: 4px; }
+.card-list-container::-webkit-scrollbar-track { background: transparent; }
+.card-list-container::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+.card-list-container::-webkit-scrollbar-thumb:hover { background: var(--text-hint); }
+
+/* ========== PRINT ========== */
+@media print {
+  .header, .sidebar, .fab, .control-bar, .notification-container { display: none !important; }
+  .main { top: 0; left: 0; }
+}
+
+/* ========== REDUCED MOTION ========== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ========== TOUCH DEVICE ADJUSTMENTS ========== */
+@media (hover: none) {
+  .card-action-btn { opacity: 1 !important; }
+  .card-thumb-overlay .material-icons-round { opacity: 0 !important; }
+
+  /* Larger touch targets */
+  .icon-btn { width: 44px; height: 44px; }
+  .nav-item { padding: 13px 16px; }
+  .diff-chip { padding: 5px 12px; font-size: 12px; }
+  .chip { padding: 5px 14px; font-size: 13px; }
+}
+
+/* ========== LANDSCAPE PHONE ========== */
+@media (max-height: 500px) and (orientation: landscape) {
+  :root { --header-height: 48px; }
+
+  .card-body { padding: 7px 8px 6px; }
+  .card-title { font-size: 11px; -webkit-line-clamp: 1; }
+  .control-bar { padding: 6px 10px; }
+}
+
+/* ========== VERY SMALL SCREENS (< 360px) ========== */
+@media (max-width: 360px) {
+  .view-toggle-group { display: none; } /* hide on very narrow screens */
+  .filter-toggle-btn span:last-child { display: none; } /* hide text, keep icon */
+  .sort-select { max-width: 110px; }
+}

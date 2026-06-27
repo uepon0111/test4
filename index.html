@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>セカイ記録帳</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ヘッダー -->
+    <header class="app-header" id="app-header">
+      <div class="header-left">
+        <button class="icon-btn" id="btn-sidebar-toggle" aria-label="サイドバー">
+          <span class="material-icons-round">menu</span>
+        </button>
+        <div class="app-logo">
+          <span class="material-icons-round logo-icon">auto_stories</span>
+          <span class="app-title">セカイ記録帳</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="icon-btn primary-action" id="btn-upload-header" aria-label="記録を追加">
+          <span class="material-icons-round">add_photo_alternate</span>
+        </button>
+        <button class="icon-btn" id="btn-trash-header" aria-label="ゴミ箱">
+          <span class="material-icons-round">delete_outline</span>
+          <span class="trash-badge hidden" id="trash-badge"></span>
+        </button>
+        <button class="icon-btn" id="btn-settings-header" aria-label="設定">
+          <span class="material-icons-round">settings</span>
+        </button>
+        <div id="auth-widget">
+          <button class="btn-signin" id="btn-signin">
+            <span class="material-icons-round">account_circle</span>
+            <span class="btn-signin-text">ログイン</span>
+          </button>
+          <button class="user-btn hidden" id="user-btn" aria-label="アカウント">
+            <img class="user-avatar" id="user-avatar" src="" alt="">
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 本体レイアウト -->
+    <div class="app-body">
+
+      <!-- サイドバー -->
+      <nav class="sidebar" id="sidebar">
+        <ul class="nav-list">
+          <li class="nav-item active" data-view="list" title="記録一覧">
+            <span class="material-icons-round">grid_view</span>
+            <span class="nav-label">記録一覧</span>
+          </li>
+          <li class="nav-item" data-view="settings" title="設定">
+            <span class="material-icons-round">tune</span>
+            <span class="nav-label">設定</span>
+          </li>
+          <li class="nav-item" data-view="trash" title="ゴミ箱">
+            <span class="material-icons-round">delete_outline</span>
+            <span class="nav-label">ゴミ箱</span>
+          </li>
+        </ul>
+        <div class="sidebar-stats" id="sidebar-stats"></div>
+      </nav>
+
+      <!-- コンテンツエリア -->
+      <div class="content-area">
+
+        <!-- ===== リスト表示 ===== -->
+        <div class="view active" id="view-list">
+
+          <!-- モード・表示切り替えバー -->
+          <div class="mode-bar">
+            <div class="seg-control" id="mode-selector">
+              <button class="seg-btn active" data-mode="ap">AP基準</button>
+              <button class="seg-btn" data-mode="ap_tournament">大会基準</button>
+              <button class="seg-btn" data-mode="fc">FC基準</button>
+            </div>
+            <div class="seg-control" id="display-selector">
+              <button class="seg-btn active" data-display="all">全て表示</button>
+              <button class="seg-btn" data-display="best">自己ベスト</button>
+            </div>
+          </div>
+
+          <!-- フィルター・検索パネル -->
+          <div class="filter-panel" id="filter-panel">
+            <div class="filter-toggle" id="filter-toggle">
+              <span class="material-icons-round">filter_list</span>
+              <span>フィルター・検索</span>
+              <span class="filter-active-count hidden" id="filter-count"></span>
+              <span class="material-icons-round toggle-arrow">expand_more</span>
+            </div>
+            <div class="filter-body collapsed" id="filter-body">
+
+              <!-- 検索 -->
+              <div class="filter-row">
+                <div class="search-wrap">
+                  <span class="material-icons-round">search</span>
+                  <input type="text" id="search-name" class="search-input" placeholder="楽曲名・読みで検索">
+                  <button class="clear-btn hidden" id="clear-name" aria-label="クリア">
+                    <span class="material-icons-round">close</span>
+                  </button>
+                </div>
+                <div class="search-wrap level-search">
+                  <span class="material-icons-round">tag</span>
+                  <input type="number" id="search-level" class="search-input" placeholder="Lv" min="1" max="46">
+                </div>
+              </div>
+
+              <!-- 並び替え -->
+              <div class="filter-row">
+                <label class="filter-label">並び替え</label>
+                <div class="sort-pills" id="sort-pills">
+                  <button class="sort-pill" data-sort="date">
+                    <span>追加日</span>
+                    <span class="material-icons-round sort-arrow active-asc">arrow_downward</span>
+                  </button>
+                  <button class="sort-pill" data-sort="name">
+                    <span>楽曲名</span>
+                    <span class="material-icons-round sort-arrow">unfold_more</span>
+                  </button>
+                  <button class="sort-pill" data-sort="level">
+                    <span>レベル</span>
+                    <span class="material-icons-round sort-arrow">unfold_more</span>
+                  </button>
+                  <button class="sort-pill" data-sort="miss">
+                    <span>ミス数</span>
+                    <span class="material-icons-round sort-arrow">unfold_more</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 達成状況 -->
+              <div class="filter-row">
+                <label class="filter-label">達成状況</label>
+                <div class="chip-row">
+                  <button class="filter-chip" id="chip-ap" data-filter="ap">
+                    <span class="material-icons-round">stars</span>AP済み
+                  </button>
+                  <button class="filter-chip" id="chip-fc" data-filter="fc">
+                    <span class="material-icons-round">diamond</span>FC済み
+                  </button>
+                </div>
+              </div>
+
+              <!-- 難易度 -->
+              <div class="filter-row">
+                <label class="filter-label">難易度</label>
+                <div class="diff-row" id="diff-filter">
+                  <button class="diff-chip" data-diff="EASY">EASY</button>
+                  <button class="diff-chip" data-diff="NORMAL">NORMAL</button>
+                  <button class="diff-chip" data-diff="HARD">HARD</button>
+                  <button class="diff-chip" data-diff="EXPERT">EXPERT</button>
+                  <button class="diff-chip" data-diff="MASTER">MASTER</button>
+                  <button class="diff-chip" data-diff="APPEND">APPEND</button>
+                </div>
+              </div>
+
+              <!-- ミス数範囲 -->
+              <div class="filter-row">
+                <label class="filter-label">ミス数範囲</label>
+                <div class="range-row">
+                  <input type="number" id="miss-min" class="range-input" placeholder="最小" min="0">
+                  <span class="range-sep">〜</span>
+                  <input type="number" id="miss-max" class="range-input" placeholder="最大" min="0">
+                  <button class="icon-btn sm" id="clear-range" aria-label="範囲クリア">
+                    <span class="material-icons-round">close</span>
+                  </button>
+                </div>
+              </div>
+
+            </div><!-- /filter-body -->
+          </div><!-- /filter-panel -->
+
+          <!-- 件数表示 -->
+          <div class="results-bar">
+            <span class="results-count" id="results-count">0件</span>
+            <button class="icon-btn sm" id="btn-refresh" aria-label="再読み込み" title="更新">
+              <span class="material-icons-round">refresh</span>
+            </button>
+          </div>
+
+          <!-- 仮想スクロールコンテナ -->
+          <div class="vs-container" id="vs-container">
+            <div class="vs-phantom" id="vs-phantom"></div>
+            <div class="vs-content" id="vs-content"></div>
+          </div>
+
+          <!-- 空状態 -->
+          <div class="empty-state hidden" id="empty-state">
+            <span class="material-icons-round empty-icon">photo_library</span>
+            <p class="empty-title">記録がありません</p>
+            <p class="empty-sub">右上のボタンからリザルト画像を追加してください</p>
+            <button class="btn-primary" id="btn-upload-empty">
+              <span class="material-icons-round">add_photo_alternate</span>
+              <span>記録を追加</span>
+            </button>
+          </div>
+
+        </div><!-- /view-list -->
+
+        <!-- ===== 設定 ===== -->
+        <div class="view" id="view-settings">
+          <div class="page-header">
+            <h2 class="page-title">設定</h2>
+          </div>
+          <div class="settings-content" id="settings-content"></div>
+        </div>
+
+        <!-- ===== ゴミ箱 ===== -->
+        <div class="view" id="view-trash">
+          <div class="page-header">
+            <h2 class="page-title">ゴミ箱</h2>
+            <span class="page-sub">削除から3日後に完全削除されます</span>
+          </div>
+          <div class="trash-actions" id="trash-actions"></div>
+          <div class="trash-list" id="trash-list"></div>
+        </div>
+
+      </div><!-- /content-area -->
+    </div><!-- /app-body -->
+
+    <!-- ===== モーダルオーバーレイ ===== -->
+    <div class="modal-overlay hidden" id="modal-overlay">
+      <div class="modal-box" id="modal-box" role="dialog" aria-modal="true">
+        <button class="modal-close" id="modal-close" aria-label="閉じる">
+          <span class="material-icons-round">close</span>
+        </button>
+        <div class="modal-content" id="modal-content"></div>
+      </div>
+    </div>
+
+    <!-- ===== 通知コンテナ ===== -->
+    <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+    <!-- ===== ローディングオーバーレイ ===== -->
+    <div class="loading-overlay hidden" id="loading-overlay">
+      <div class="loading-inner">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loading-text">処理中...</div>
+      </div>
+    </div>
+
+  </div><!-- /app -->
+
+  <!-- 外部ライブラリ -->
+  <script src="https://accounts.google.com/gsi/client" async></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+
+  <!-- アプリ本体 (ESモジュール) -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
